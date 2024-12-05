@@ -49,7 +49,7 @@ export class CustomActionView extends ActionToolView {
   }
 
   doit(): void {
-    void this._execute()
+    this._wait_for(this._execute())
   }
 }
 

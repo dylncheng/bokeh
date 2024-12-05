@@ -48,6 +48,13 @@ export abstract class View implements ISignalable, Equatable {
     return this._ready
   }
 
+  protected _wait_for(promise: Promise<void>): void {
+    this._ready = this._ready.then(() => promise)
+    if (this.root != this) {
+      this.root._ready = this.root._ready.then(() => this._ready)
+    }
+  }
+
   /** @internal */
   protected _slots = new WeakMap<Slot<any, any>, Slot<any, any>>()
 
@@ -55,11 +62,7 @@ export abstract class View implements ISignalable, Equatable {
     let new_slot = this._slots.get(slot)
     if (new_slot == null) {
       new_slot = (args: Args, sender: Sender): void => {
-        const promise = Promise.resolve(slot.call(this, args, sender))
-        this._ready = this._ready.then(() => promise)
-        if (this.root != this) {
-          this.root._ready = this.root._ready.then(() => this._ready)
-        }
+        this._wait_for(Promise.resolve(slot.call(this, args, sender)))
       }
       this._slots.set(slot, new_slot)
     }
