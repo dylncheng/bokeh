@@ -323,10 +323,8 @@ Follow these steps to write new visual tests or update existing tests:
        ``/integration/report?platform=macos``, and finally to
        ``/integration/report?platform=windows``.
     6. If you did not detect any unintentional differences, commit all new or
-       modified ``*.blf`` and ``*.png`` files from the folders
-       :bokeh-tree:`bokehjs/test/baselines/linux`,
-       :bokeh-tree:`bokehjs/test/baselines/macos`, and
-       :bokeh-tree:`bokehjs/test/baselines/windows`.
+       modified ``*.blf`` and ``*.png`` files from the folder
+       :bokeh-tree:`bokehjs/test/baselines/linux`.
     7. Push your changes to GitHub again and verify that the tests pass this
        time.
 

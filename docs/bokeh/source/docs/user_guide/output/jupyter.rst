@@ -217,7 +217,7 @@ Trusting notebooks
 ~~~~~~~~~~~~~~~~~~
 
 Depending on the version of the notebook you are using, you may have to
-`trust the notebook <https://jupyter-notebook.readthedocs.io/en/stable/security.html#explicit-trust>`_
+`trust the notebook <https://jupyter-notebook.readthedocs.io/en/4.x/security.html#explicit-trust>`_
 for Bokeh plots to re-render when the notebook is closed and re-
 opened. The **Trust Notebook** option is typically located under the
 **File** menu:

@@ -75,7 +75,7 @@ class DashPattern(Either):
     To indicate that dashing is turned off (solid lines), specify the empty
     list [].
 
-    .. _HTML5 Canvas dash specification style: http://www.w3.org/html/wg/drafts/2dcontext/html5_canvas/#dash-list
+    .. _HTML5 Canvas dash specification style: https://www.w3.org/2015/04/2dcontext-lc-sample.html#dash-list
 
     """
 
