@@ -52,6 +52,7 @@ from .formatters import (
     LogTickFormatter,
     MercatorTickFormatter,
     TickFormatter,
+    ImageTickFormatter,
 )
 from .labeling import AllLabels, LabelingPolicy
 from .renderers import GuideRenderer

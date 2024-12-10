@@ -15,6 +15,7 @@ labels on Bokeh plot axes.
 from __future__ import annotations
 
 import logging # isort:skip
+import base64
 log = logging.getLogger(__name__)
 
 #-----------------------------------------------------------------------------
@@ -49,6 +50,8 @@ from ..core.validation.errors import MISSING_MERCATOR_DIMENSION
 from ..model import Model
 from ..util.strings import format_docstring
 from .tickers import Ticker
+from io import BytesIO
+from PIL import Image
 
 #-----------------------------------------------------------------------------
 # Globals and constants
@@ -65,6 +68,7 @@ __all__ = (
     "NumeralTickFormatter",
     "PrintfTickFormatter",
     "TickFormatter",
+    "ImageTickFormatter",
 )
 
 #-----------------------------------------------------------------------------
@@ -668,6 +672,40 @@ class DatetimeTickFormatter(TickFormatter):
     Relative to the tick label text baseline, where the context should be
     rendered. Valid values are: `"below"`, `"above"`, `"left"`, and `"right"`.
     """)
+
+class ImageTickFormatter(TickFormatter):
+    ''' Formatter for displaying image data as tick labels.
+
+    '''
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    __implementation__ = "bokehjs/src/lib/models/formatters/image_tick_formatter.ts"
+
+    image_source = Dict(String, String, help="Mapping of tick labels to image data.")
+    source_type = String(default="url", help="Source type: 'url' or 'array'.")
+
+    def format_ticks(self, ticks):
+        formatted = []
+        for tick in ticks:
+            if tick in self.image_source:
+                if self.source_type == "url":
+                    formatted.append(f'<img src="{self.image_source[tick]}" alt="{tick}" style="height: 20px;"/>')
+                elif self.source_type == "array":
+                    # Convert numpy array to base64-encoded PNG
+                    array_data = self.image_source[tick]
+                    img = Image.fromarray(array_data.astype('uint8'), 'RGBA')
+                    buffered = BytesIO()
+                    img.save(buffered, format="PNG")
+                    img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+                    formatted.append(f'<img src="data:image/png;base64,{img_str}" alt="{tick}" style="height: 20px;"/>')
+                else:
+                    raise ValueError(f"Unsupported source type: {self.source_type}")
+            else:
+                formatted.append(str(tick))  # Default to text if no image available
+        return formatted
+
 
 def RELATIVE_DATETIME_CONTEXT() -> DatetimeTickFormatter:
     return DatetimeTickFormatter(
